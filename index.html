@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qwen Image Editor - עורך תמונות בעזרת AI</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎨 Qwen Image Editor</h1>
+            <p>עריכת תמונות בעזרת בינה מלאכותית</p>
+        </header>
+
+        <div class="status-bar">
+            <span id="status">בדיקת חיבור...</span>
+            <span id="device-info"></span>
+        </div>
+
+        <main>
+            <!-- טאב עריכה יחידה -->
+            <div class="tabs">
+                <button class="tab-button active" onclick="switchTab('single')">עריכה יחידה</button>
+                <button class="tab-button" onclick="switchTab('batch')">עריכה קבוצתית</button>
+            </div>
+
+            <!-- עריכה יחידה -->
+            <div id="single" class="tab-content active">
+                <div class="upload-section">
+                    <div class="upload-box" id="imageUploadBox">
+                        <p>גרור תמונה או לחץ להעלאה</p>
+                        <input type="file" id="imageInput" accept="image/*">
+                    </div>
+                    <div id="imagePreview" class="preview"></div>
+                </div>
+
+                <div class="upload-section">
+                    <div class="upload-box" id="maskUploadBox">
+                        <p>גרור מסכה (שחור = לעריכה, לבן = בלי שינוי)</p>
+                        <input type="file" id="maskInput" accept="image/*">
+                    </div>
+                    <div id="maskPreview" class="preview"></div>
+                </div>
+
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="prompt">הנחיית טקסט:</label>
+                        <textarea id="prompt" placeholder="תאר את השינוי שרצית לבצע..."></textarea>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="numSteps">מספר צעדים: <span id="stepsValue">50</span></label>
+                        <input type="range" id="numSteps" min="10" max="100" value="50" step="5">
+                    </div>
+
+                    <div class="control-group">
+                        <label for="guidance">Guidance Scale: <span id="guidanceValue">7.5</span></label>
+                        <input type="range" id="guidance" min="1" max="20" value="7.5" step="0.5">
+                    </div>
+
+                    <button id="editButton" class="btn btn-primary" onclick="editImage()">
+                        ערוך תמונה
+                    </button>
+                </div>
+
+                <div id="resultSection" class="result-section hidden">
+                    <h3>תוצאה:</h3>
+                    <div id="resultImage" class="preview"></div>
+                    <button class="btn btn-secondary" onclick="downloadResult()">הורדת התמונה</button>
+                </div>
+            </div>
+
+            <!-- עריכה קבוצתית -->
+            <div id="batch" class="tab-content">
+                <div class="upload-section">
+                    <div class="upload-box" id="batchUploadBox">
+                        <p>גרור תמונות מרובות או לחץ להעלאה</p>
+                        <input type="file" id="batchInput" accept="image/*" multiple>
+                    </div>
+                    <div id="batchPreview" class="preview-grid"></div>
+                </div>
+
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="batchPrompt">הנחיית טקסט:</label>
+                        <textarea id="batchPrompt" placeholder="הנחיה זהה לכל התמונות..."></textarea>
+                    </div>
+
+                    <button id="batchEditButton" class="btn btn-primary" onclick="batchEditImages()">
+                        ערוך הכל
+                    </button>
+                </div>
+
+                <div id="batchResults" class="batch-results hidden">
+                    <h3>תוצאות:</h3>
+                    <div id="resultsList"></div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>מודל: Qwen Image Edit Plus NSFW LoRA</p>
+        </footer>
+    </div>
+
+    <!-- מודלים -->
+    <div id="loadingModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="spinner"></div>
+            <p id="loadingText">עיבוד התמונה...</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
